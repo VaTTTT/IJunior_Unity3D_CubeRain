@@ -44,15 +44,15 @@ public class Cube : MonoBehaviour
 
     private IEnumerator SelfDisabling()
     {
-        WaitForSeconds delay = new WaitForSeconds(Random.Range(_maximalTimeToLive, _maximalTimeToLive));
+        WaitForSeconds delay = new WaitForSeconds(Random.Range(_minimalTimeToLive, _maximalTimeToLive));
 
         yield return delay;
 
-        Reset();
+        ResetState();
         gameObject.SetActive(false);
     }
 
-    private void Reset()
+    private void ResetState()
     {
         _renderer.material.color = _initialColor;
         _isCollided = false;
