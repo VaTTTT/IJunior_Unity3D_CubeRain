@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Cube : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class Cube : MonoBehaviour
     private bool _isCollided;
     private Color _initialColor;
     private Renderer _renderer;
+
+    public event UnityAction<Cube> Disabled;
 
     private void Start()
     {
@@ -32,11 +35,6 @@ public class Cube : MonoBehaviour
         }
     }
 
-    public void SetPosition(Vector3 position)
-    {
-        transform.position = position;
-    }
-
     private void ChangeColor(Color color)
     {
         _renderer.material.color = color;
@@ -48,6 +46,7 @@ public class Cube : MonoBehaviour
 
         yield return delay;
 
+        Disabled?.Invoke(this);
         ResetState();
         gameObject.SetActive(false);
     }

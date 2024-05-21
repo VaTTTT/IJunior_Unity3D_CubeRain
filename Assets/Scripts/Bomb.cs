@@ -9,6 +9,7 @@ public class Bomb : MonoBehaviour
     [SerializeField] private float _explosionRadius;
 
     private Color _initialColor;
+    private float _transparencyDefaultValue;
     private Renderer _renderer;
     private float _delay;
 
@@ -18,6 +19,7 @@ public class Bomb : MonoBehaviour
     {
         _renderer = GetComponent<Renderer>();
         _initialColor = _renderer.material.color;
+        _transparencyDefaultValue = 1;
     }
     private void OnEnable()
     {
@@ -48,21 +50,16 @@ public class Bomb : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void SetPosition(Vector3 position)
-    {
-        transform.position = position;
-    }
-
     private IEnumerator ChangingTransparency()
     {
-        float transparencyCurrentValue = 1;
+        float transparencyCurrentValue = _transparencyDefaultValue;
         float transparencyTargetValue = 0;
 
         Color tempColor = _renderer.material.color;
 
         while (_renderer.material.color.a > 0)
         {
-            transparencyCurrentValue = Mathf.MoveTowards(transparencyCurrentValue, transparencyTargetValue, 1 / _delay * Time.deltaTime);
+            transparencyCurrentValue = Mathf.MoveTowards(transparencyCurrentValue, transparencyTargetValue, _transparencyDefaultValue / _delay * Time.deltaTime);
             tempColor.a = transparencyCurrentValue;
             _renderer.material.color = tempColor;
 

@@ -1,56 +1,49 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class CubeSpawner : MonoBehaviour
+public class CubeSpawner : Spawner
 {
-    [SerializeField] private Cube _cubePrefab;
-    [SerializeField] private int _initialNumberOfCubes;
-    [SerializeField] private float _spawnDelay;
+    [SerializeField] private Cube _prefab;
     [SerializeField] private float _spawnRadius;
+    [SerializeField] private float _spawnDelay;
 
-    private List<Cube> _cubePool;
+    private ObjectPool<Cube> _pool;
     private bool _isSpawning;
+
+
+    public event UnityAction<Cube> Spawned;
+    public override event UnityAction ObjectsNumberChanged;
 
     private void Start()
     {
-        _cubePool = new List<Cube>();
-        CreateCubePool();
+        _pool = new ObjectPool<Cube>(_prefab, _poolSize, transform);
         _isSpawning = true;
-        StartCoroutine(nameof(SpawnCubes));
+        StartCoroutine(nameof(RandomPositionSpawning));
     }
 
-    private void CreateCubePool()
+    private IEnumerator RandomPositionSpawning()
     {
-        for (int i = 0; i < _initialNumberOfCubes; i++)
-        {
-            Cube newCube = Instantiate(_cubePrefab, transform.position, transform.rotation);
-            _cubePool.Add(newCube);
-            newCube.gameObject.SetActive(false);
-        }
-    }
-
-    private IEnumerator SpawnCubes()
-    {
-        WaitForSeconds delay = new WaitForSeconds(_spawnDelay);
-        Vector3 spawnPosition;
+        WaitForSeconds delay = new(_spawnDelay);
+        Vector3 randomPosition;
 
         while (_isSpawning)
         {
-            foreach (Cube cube in _cubePool)
-            {
-                if (!cube.gameObject.activeSelf)
-                {
-                    spawnPosition = new Vector3(transform.position.x + Random.Range(-_spawnRadius, _spawnRadius), transform.position.y, transform.position.z + Random.Range(-_spawnRadius, _spawnRadius));
+            Cube cube = _pool.GetFreeObject();
+            randomPosition = new Vector3(+Random.Range(-_spawnRadius, _spawnRadius), transform.position.y, transform.position.z + Random.Range(-_spawnRadius, _spawnRadius));
+            cube.transform.position = randomPosition;
+            cube.gameObject.SetActive(true);
+            Spawned?.Invoke(cube);
+            UpdateInfo();
 
-                    cube.SetPosition(spawnPosition);
-                    cube.gameObject.SetActive(true);
-
-                    yield return delay;
-                }
-            }
-
-            yield return null;
+            yield return delay;
         }
+    }
+
+    private void UpdateInfo()
+    {
+        _objectsSpawned++;
+        _objectsActive = _pool.GetActiveObjectsNumber();
+        ObjectsNumberChanged?.Invoke();
     }
 }
