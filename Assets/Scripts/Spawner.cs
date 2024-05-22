@@ -12,5 +12,4 @@ public abstract class Spawner : MonoBehaviour
     public int ObjectsActive => _objectsActive;
 
     public abstract event UnityAction ObjectsNumberChanged;
-
 }

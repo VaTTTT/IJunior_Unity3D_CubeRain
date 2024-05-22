@@ -21,6 +21,7 @@ public class Bomb : MonoBehaviour
         _initialColor = _renderer.material.color;
         _transparencyDefaultValue = 1;
     }
+
     private void OnEnable()
     {
         _delay = Random.Range(_minimalDetonationTime, _maximalDetonationTime);

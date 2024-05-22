@@ -25,7 +25,7 @@ public class Cube : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent<Platform>(out _))
         {
-            if (!_isCollided)
+            if (_isCollided == false)
             {
                 ChangeColor(_collidedColor);
                 _isCollided = true;

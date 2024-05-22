@@ -11,7 +11,6 @@ public class CubeSpawner : Spawner
     private ObjectPool<Cube> _pool;
     private bool _isSpawning;
 
-
     public event UnityAction<Cube> Spawned;
     public override event UnityAction ObjectsNumberChanged;
 
@@ -27,7 +26,7 @@ public class CubeSpawner : Spawner
         WaitForSeconds delay = new(_spawnDelay);
         Vector3 randomPosition;
 
-        while (_isSpawning)
+        while (_isSpawning == true)
         {
             Cube cube = _pool.GetFreeObject();
             randomPosition = new Vector3(+Random.Range(-_spawnRadius, _spawnRadius), transform.position.y, transform.position.z + Random.Range(-_spawnRadius, _spawnRadius));

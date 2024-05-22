@@ -6,9 +6,6 @@ public class ObjectPool<T> where T : MonoBehaviour
 {
     private List<T> _pool;
 
-    private T Prefab { get; }
-    private Transform Container { get; }
-
     public ObjectPool(T prefab, int poolSize, Transform container)
     {
         Prefab = prefab;
@@ -16,6 +13,10 @@ public class ObjectPool<T> where T : MonoBehaviour
 
         CreatePool(poolSize);
     }
+
+    private T Prefab { get; }
+    private Transform Container { get; }
+
     public T GetFreeObject()
     {
         T freeObject = _pool.FirstOrDefault(freeObject => !freeObject.isActiveAndEnabled);
